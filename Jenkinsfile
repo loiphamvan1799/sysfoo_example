@@ -1,39 +1,39 @@
 pipeline {
-    agent any
-
-    tools {
-        maven 'Maven 3.9.15'
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        echo 'Compiling the project...'
+        sh 'mvn compile'
+      }
     }
 
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Compiling the project...'
-                sh 'mvn compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo 'Running unit tests...'
-                sh 'mvn clean test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                echo 'Packaging the application...'
-                sh 'package -DskipTests'
-            }
-        }
+    stage('Test') {
+      steps {
+        echo 'Running unit tests...'
+        sh 'mvn clean test'
+      }
     }
 
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed. Please check the logs.'
-        }
+    stage('Package') {
+      steps {
+        echo 'Packaging the application...'
+        sh 'mvn package -DskipTests'
+      }
     }
+
+  }
+  tools {
+    maven 'Maven 3.9.15'
+  }
+  post {
+    success {
+      echo 'Pipeline completed successfully!'
+    }
+
+    failure {
+      echo 'Pipeline failed. Please check the logs.'
+    }
+
+  }
 }
